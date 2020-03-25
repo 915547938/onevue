@@ -2,14 +2,8 @@
     <div class="photoList">
         <div class="category-list">
             <ul>
-                <li>
-                    <a href="javascript:void(0);">标题1</a>
-                </li>
-                <li>
-                    <a href="javascript:void(0);">标题2</a>
-                </li>
-                <li>
-                    <a href="javascript:void(0);">标题3</a>
+                <li v-for="(category,indexs) in categoryList" :key="category.id">
+                    <a href="javascript:void(0);">{{category.title}}</a>
                 </li>
             </ul>
         </div>
@@ -18,12 +12,13 @@
             <ul>
                 <li v-for="(item,index) in imgList" :key="item.id" >
                     <a href="javascript:void(0);">
-                        <img src="" alt="">
+                       <!-- <img :src="item.img_url" alt="">-->
+                        <img v-lazy="item.img_url">
                     </a>
                     <p>
-                        <span>图片标题</span>
+                        <span>{{item.title}}</span>
                         <br>
-                        <span>图片标题</span>
+                        <span>{{item.zhaiyao}}</span>
                     </p>
                 </li>
             </ul>
@@ -33,7 +28,38 @@
 
 <script>
     export default {
-        name: "PhotoList"
+        name: "PhotoList",
+        data(){
+            return{
+                imgList:[],
+                categoryList:[]
+            }
+        },
+        methods:{
+            //获取图文数据
+            loadImgByCategoryId(id){
+                this.$axios.get('imglist/'+id)
+                    .then(res=>{
+                        this.imgList=res.data.message;
+                        console.log(res);
+                    })
+                    .catch(err=>{
+                        console.log(err);
+                    })
+            }
+        },
+        created(){
+            this.loadImgByCategoryId(0);
+            //获取图文分享的分类信息
+            this.$axios.get('category')
+                .then(res=>{
+                    this.categoryList=res.data.message;
+                    console.log(res);
+                })
+                .catch(err=>{
+                    console.log(err);
+                })
+        }
     }
 </script>
 
@@ -47,7 +73,7 @@
         width:100%;
         height:50px;
         overflow-y: hidden;
-        overflow-x: hidden;
+        overflow-x: scroll;
         white-space:nowrap;
     }
     .category-list ul li{
@@ -67,7 +93,7 @@
     }
     .photo-list ul li{
         display:block;
-        width:100%;
+        position: relative;
     }
     .photo-list ul li a{
         display:block;
