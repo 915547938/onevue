@@ -31,7 +31,7 @@
         name: "PhotoList",
         data(){
             return{
-                imgList:[],
+                imgLisf:[],
                 categoryList:[]
             }
         },
