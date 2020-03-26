@@ -36,7 +36,7 @@
             }
         },
         methods:{
-            //获取图文数据
+            //获取图文数据sssssss
             loadImgByCategoryId(id){
                 this.$axios.get('imglist/'+id)
                     .then(res=>{
