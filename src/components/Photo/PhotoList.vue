@@ -1,10 +1,11 @@
 <template>
     <div class="photoList">
+        <NavBar title="图文分类"/>
         <div class="category-list">
             <ul>
                 <li v-for="(category,indexs) in categoryList" :key="category.id">
-                    <a href="javascript:void(0);">{{category.title}}</a>
-                </li>
+                    <a href="javascript:void(0);" :class="{active:category.id==seletcIndex}">{{category.title}}</a>
+                </li>s
             </ul>
         </div>
         <!--图片展示区域-->
@@ -31,12 +32,13 @@
         name: "PhotoList",
         data(){
             return{
-                imgLiss:[],
-                categoryList:[]
+                imgList:[],
+                categoryList:[],
+                seletcIndex:0
             }
         },
         methods:{
-            //获取图文数据
+            //获取图文数据sssssss
             loadImgByCategoryId(id){
                 this.$axios.get('imglist/'+id)
                     .then(res=>{
@@ -54,7 +56,7 @@
             this.$axios.get('category')
                 .then(res=>{
                     this.categoryList=res.data.message;
-                    console.log(res);
+                    console.log(res,111);
                 })
                 .catch(err=>{
                     console.log(err);
@@ -71,7 +73,7 @@
     }
     .category-list ul{
         width:100%;
-        height:50px;
+        /*height:50px;*/
         overflow-y: hidden;
         overflow-x: scroll;
         white-space:nowrap;
