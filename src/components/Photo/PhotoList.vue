@@ -3,7 +3,7 @@
         <NavBar title="图文分类"/>
         <div class="category-list">
             <ul>
-                <li v-for="(category,indexs) in categoryList" :key="category.id">
+                <li v-for="(category,indexs) in categoryList" :key="category.id" @click="categoryHandler(category.id)">
                     <a href="javascript:void(0);" :class="{active:category.id==seletcIndex}">{{category.title}}</a>
                 </li>s
             </ul>
@@ -38,25 +38,55 @@
             }
         },
         methods:{
+            //点击分类
+            categoryHandler(index){
+                //动态路由匹配
+                console.log(index);
+                console.log(this.$router);
+                this.$router.push({name:'photo.list',params:{categoryId:index}});
+                this.seletcIndex=index;
+            },
             //获取图文数据sssssss
             loadImgByCategoryId(id){
                 this.$axios.get('imglist/'+id)
                     .then(res=>{
                         this.imgList=res.data.message;
-                        console.log(res);
+                        //console.log(res);
                     })
                     .catch(err=>{
                         console.log(err);
                     })
             }
         },
+        beforeRouteEnter (to, from, next) {
+            // 在渲染该组件的对应路由被 confirm 前调用
+            // 不！能！获取组件实例 `this`
+            // 因为当守卫执行前，组件实例还没被创建
+            next(vm => {
+                // 通过 `vm` 访问组件实例
+                vm.loadImgByCategoryId(to.params.categoryId);
+                vm.seletcIndex=to.params.categoryId;
+            })
+        },
+        beforeRouteUpdate (to, from, next) {
+            // 在当前路由改变，但是该组件被复用时调用
+            // 举例来说，对于一个带有动态参数的路径 /foo/:id，在 /foo/1 和 /foo/2 之间跳转的时候，
+            // 由于会渲染同样的 Foo 组件，因此组件实例会被复用。而这个钩子就会在这个情况下被调用。
+            // 可以访问组件实例 `this`
+            //console.log(to);
+            /*console.log(from);*/
+            this.loadImgByCategoryId(to.params.categoryId);
+            this.seletcIndex=to.params.categoryId;
+            //console.log(this.seletcIndex);
+            next();
+        },
         created(){
-            this.loadImgByCategoryId(0);
+            //this.loadImgByCategoryId(0);
             //获取图文分享的分类信息
             this.$axios.get('category')
                 .then(res=>{
                     this.categoryList=res.data.message;
-                    console.log(res,111);
+                    //console.log(res,111);
                 })
                 .catch(err=>{
                     console.log(err);
